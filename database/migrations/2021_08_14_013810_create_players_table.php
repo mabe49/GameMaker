@@ -20,6 +20,7 @@ class CreatePlayersTable extends Migration
             $table->integer('game_count')->default(0);
             $table->integer('player_strength')->default(0);
             $table->integer('rest_count')->default(0);
+            $table->boolean('attendance')->default(false);
             $table->timestamps();
         });
     }

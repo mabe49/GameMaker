@@ -15,5 +15,6 @@ class Player extends Model
         'game_count',
         'player_strength',
         'rest_count',
+        'attendance'
     ];
 }

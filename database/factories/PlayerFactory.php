@@ -27,6 +27,7 @@ class PlayerFactory extends Factory
             'game_count' => 10,
             'player_strength' => $this->faker->numberBetween(0, 6),
             'rest_count' => $this->faker->numberBetween(0, 3),
+            'attendance' => $this->faker->boolean(50),
         ];
     }
 }

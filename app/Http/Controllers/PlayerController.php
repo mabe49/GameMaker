@@ -16,7 +16,8 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Player/Index', ['players' => Player::all()]);
+        $players = Player::all();
+        return Inertia::render('Player/Index', ['players' => $players]);
     }
 
     /**
@@ -41,6 +42,7 @@ class PlayerController extends Controller
             Request::validate([
                 'name' => ['required'],
                 'player_strength' => ['required'],
+                'attendance' => ['required'],
             ])
             );
 
@@ -76,9 +78,32 @@ class PlayerController extends Controller
      * @param  \App\Models\Player  $player
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Player $player)
+    public function update(Request $request, $id)
     {
-        //
+        // Player::create(
+        //     Request::validate([
+        //         'name' => ['required'],
+        //         'player_strength' => ['required'],
+        //         'attendance' => ['required'],
+        //     ])
+        //     );
+
+        // $player->update(
+        //     Request::validate([
+        //                 'name' => ['required'],
+        //                 'player_strength' => ['required'],
+        //                 'attendance' => ['required'],
+        //             ])
+        // );
+        // return Redirect::route('player.index');
+        Player::find($id)->update(
+            Request::validate([
+                'name' => ['required'],
+                'player_strength' => ['required'],
+                'attendance' => ['required'],
+            ])
+        );
+        return Redirect::route('player.index');
     }
 
     /**
@@ -91,6 +116,6 @@ class PlayerController extends Controller
     {
         $player->delete();
 
-        return Inertia::render('Player/Index', ['players' => Player::all()]);
+        return Redirect::route('player.index');
     }
 }
