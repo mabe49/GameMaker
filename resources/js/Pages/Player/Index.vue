@@ -129,8 +129,8 @@
                   <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th scope="col" class="relative px-6 py-3">
-                          <span class="sr-only">ATTENDANCE</span>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          total:<span class="font-bold">{{ total }}</span>
                         </th>
                         <th
                           scope="col"
@@ -167,9 +167,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-for="player in players" :key="player.id">
                         <td
-                          class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium"
+                          class="px-6 py-2 whitespace-nowrap text-sm font-medium"
                         >
-                          <span v-if="player.attendance" class="text-blue-500"
+                          <span v-if="player.attendance" class="text-blue-500 ml-4"
                             >●</span
                           >
                         </td>
@@ -295,8 +295,15 @@ export default {
       ],
     };
   },
+  computed: {
+      total() {
+          return (this.players.filter(element => element.attendance == 1)).length;
+      },
+
+    },
 
   methods: {
+
     closeCreater() {
       this.showCreater = false;
       this.form.clearErrors();

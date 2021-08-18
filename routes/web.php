@@ -38,3 +38,14 @@ Route::resource('/player', 'App\Http\Controllers\PlayerController')
         'store' => 'player.store'
     ])
     ->middleware(['auth']);
+
+Route::resource('/game', 'App\Http\Controllers\GameController')
+    ->names([
+        'index' => 'game.index',
+        'create' => 'game.create',
+        'edit' => 'game.edit',
+        'update' => 'game.update',
+        'destroy' => 'game.destroy',
+        'store' => 'game.store'
+    ])
+    ->middleware(['auth']);

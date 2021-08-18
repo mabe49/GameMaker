@@ -25,6 +25,9 @@
                                 <jet-nav-link :href="route('player.index')" :active="route().current('player.index')">
                                     登録者一覧
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('game.create')" :active="route().current('game.create')">
+                                    新規作成
+                                </jet-nav-link>
                             </div>
                         </div>
 
@@ -221,7 +224,7 @@
 
             <!-- Page Heading -->
             <header class="bg-yellow-400 shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
                     <slot name="header"></slot>
                 </div>
             </header>

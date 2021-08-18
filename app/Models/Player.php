@@ -17,4 +17,9 @@ class Player extends Model
         'rest_count',
         'attendance'
     ];
+
+    public function games()
+    {
+        return $this->belongsToMany(Game::class)->withTimestamps();
+    }
 }
