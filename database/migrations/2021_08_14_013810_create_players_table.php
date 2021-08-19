@@ -17,6 +17,7 @@ class CreatePlayersTable extends Migration
             $table->id();
             $table->string('name', 40);
             $table->integer('win_count')->default(0);
+            $table->integer('lose_count')->default(0);
             $table->integer('game_count')->default(0);
             $table->integer('player_strength')->default(0);
             $table->integer('rest_count')->default(0);

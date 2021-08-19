@@ -42,7 +42,7 @@ class PlayerController extends Controller
             Request::validate([
                 'name' => ['required'],
                 'player_strength' => ['required'],
-                'attendance' => ['required'],
+                'attendance' => [],
             ])
             );
 

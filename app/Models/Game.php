@@ -14,8 +14,8 @@ class Game extends Model
             'result',
         ];
 
-    public function player()
+    public function players()
     {
-        return $this->belongsTo(Player::class)->withTimestamps();
+        return $this->belongsToMany(Player::class)->withTimestamps();
     }
 }

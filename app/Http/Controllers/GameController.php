@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Player;
 use App\Models\Game;
-
+use Illuminate\Support\Facades\Redirect;
+use SebastianBergmann\Environment\Console;
 
 class GameController extends Controller
 {
@@ -17,7 +18,14 @@ class GameController extends Controller
      */
     public function index()
     {
-        //
+        $games = Game::all();
+        $datas = array_merge([], $games->toArray());
+
+        foreach ($games as $key => $game) {
+            $datas[$key]['players'] = array_merge([], Game::find($key + 1)->players()->get()->toArray());
+        }
+
+        return Inertia::render('Games/Index', ['datas' => $datas]);
     }
 
     /**
@@ -39,7 +47,44 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $game = new Game();
+        $game->map = $request->map;
+        $game->result = $request->result;
+        $game->save();
+
+        foreach ($request->aPlayers as $aPlayer) {
+            $game->players()->attach($aPlayer);
+        }
+
+        foreach ($request->bPlayers as $bPlayer) {
+            $game->players()->attach($bPlayer);
+        }
+
+        foreach ($game->players as $key => $player) {
+            $player->game_count += 1;
+            if ($key < 6) {
+                if ($game->result === 0) {
+                    $player->win_count += 1;
+                } elseif ($game->result === 1) {
+                    $player->lose_count += 1;
+                }
+            } else {
+                if ($game->result === 0) {
+                    $player->lose_count += 1;
+                } elseif ($game->result === 1) {
+                    $player->win_count += 1;
+                }
+            }
+            $player->save();
+        }
+
+        foreach($request->sPlayers as $sPlayer) {
+            $spectatePlayer = Player::find($sPlayer);
+            $spectatePlayer->rest_count += 1;
+            $spectatePlayer->save();
+        }
+
+        return Redirect::route('game.index');
     }
 
     /**
@@ -50,7 +95,6 @@ class GameController extends Controller
      */
     public function show($id)
     {
-
     }
 
     /**

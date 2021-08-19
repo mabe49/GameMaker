@@ -24,7 +24,8 @@ class PlayerFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'win_count' => $this->faker->numberBetween(0, 10),
-            'game_count' => 10,
+            'lose_count' => $this->faker->numberBetween(0, 10),
+            'game_count' => 20,
             'player_strength' => $this->faker->numberBetween(0, 6),
             'rest_count' => $this->faker->numberBetween(0, 3),
             'attendance' => $this->faker->boolean(50),

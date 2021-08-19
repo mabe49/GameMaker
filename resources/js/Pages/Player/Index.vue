@@ -1,7 +1,7 @@
 <template>
   <app-layout title="登録者一覧">
     <template #header>
-      <h2 class="font-semibold text-gray-600 leading-tight">登録者一覧</h2>
+      <h2 class="font-semibold text-gray-600 leading-tight"></h2>
     </template>
 
     <jet-dialog-modal :show="showCreater" @close="closeCreater">
@@ -165,7 +165,7 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="player in players" :key="player.id">
+                      <tr v-for="player in players" :key="player.id" class="hover:bg-gray-200 cursor-pointer">
                         <td
                           class="px-6 py-2 whitespace-nowrap text-sm font-medium"
                         >
@@ -185,7 +185,11 @@
                             }}</span>
                             -
                             <span class="text-blue-500">{{
-                              player.game_count - player.win_count
+                              player.lose_count
+                            }}</span>
+                            -
+                            <span class="text-gray-500">{{
+                              player.game_count - player.win_count -player.lose_count
                             }}</span>
                           </div>
                         </td>
@@ -322,6 +326,7 @@ export default {
       this.form.attendance = Boolean(player.attendance);
     },
     submit() {
+      console.log(this.form);
       this.form.post(route("player.store"), {
         preserveState: true,
         preserveScroll: true,

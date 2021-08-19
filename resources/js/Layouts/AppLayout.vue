@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Head :title="title" />
+        <!-- <Head :title="title" /> -->
 
         <jet-banner />
 
@@ -19,14 +19,14 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <jet-nav-link :href="route('game.index')" :active="route().current('game.index')">
+                                    ゲーム一覧
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('game.create')" :active="route().current('game.create')">
+                                    ゲーム作成
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('player.index')" :active="route().current('player.index')">
                                     登録者一覧
-                                </jet-nav-link>
-                                <jet-nav-link :href="route('game.create')" :active="route().current('game.create')">
-                                    新規作成
                                 </jet-nav-link>
                             </div>
                         </div>
