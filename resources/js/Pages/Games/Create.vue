@@ -38,7 +38,7 @@
       </template>
     </jet-dialog-modal>
 
-    <div class="py-12 flex flex-row">
+    <div class="py-36 flex flex-row">
       <div class="max-w-7xl mx-auto px-6 px-8 w-5/12">
         <span class="text-red-500 text-sm font-bold"
           >※{{ messages[state] }}</span
@@ -98,7 +98,7 @@
                         :key="player.id"
                         @click="addSpectate(player.id)"
                         :class="{ 'bg-gray-300': selected[player.id] }"
-                        class="hover:bg-gray-300 cursor-pointer"
+                        class="cursor-pointer"
                       >
                         <td class="px-6 py-2 whitespace-nowrap">
                           <div class="text-sm font-medium text-gray-900">
@@ -112,7 +112,7 @@
                             }}</span>
                             -
                             <span class="text-blue-500">{{
-                              player.game_count - player.win_count
+                              player.lose_count
                             }}</span>
                           </div>
                         </td>

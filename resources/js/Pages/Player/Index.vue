@@ -108,7 +108,7 @@
       </template>
     </jet-dialog-modal>
 
-    <div class="py-12">
+    <div class="py-36">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-end">
           <jet-button
@@ -153,6 +153,7 @@
                         <th
                           scope="col"
                           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          @click="sortByRate"
                         >
                           SKILL-RATE
                         </th>
@@ -353,6 +354,14 @@ export default {
         preserveScroll: true,
       });
     },
+    sortByRate() {
+        this.players.sort(function (a, b) {
+        if (a.player_strength > b.player_strength) return -1;
+        if (a.player_strength < b.player_strength) return 1;
+
+        return 0;
+      });
+    }
   },
 
   components: {

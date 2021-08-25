@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,8 +25,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->get('/Player', function () {
+    return Redirect::route('player.index');
 })->name('dashboard');
 
 Route::resource('/player', 'App\Http\Controllers\PlayerController')

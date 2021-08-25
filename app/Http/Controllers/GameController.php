@@ -18,12 +18,14 @@ class GameController extends Controller
      */
     public function index()
     {
-        $games = Game::all();
-        $datas = array_merge([], $games->toArray());
+        // $games = Game::all();
+        // $datas = array_merge([], $games->toArray());
 
-        foreach ($games as $key => $game) {
-            $datas[$key]['players'] = array_merge([], Game::find($key + 1)->players()->get()->toArray());
-        }
+        // foreach ($games as $key => $game) {
+        //     $datas[$key]['players'] = array_merge([], Game::find($key + 1)->players()->get()->toArray());
+        // }
+
+        $datas = Game::with('players')->get();
 
         return Inertia::render('Games/Index', ['datas' => $datas]);
     }

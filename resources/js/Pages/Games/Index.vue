@@ -4,7 +4,7 @@
       <h2 class="font-semibold text-gray-600 leading-tight"></h2>
     </template>
 
-    <div class="flex flex-row py-12">
+    <div class="flex flex-row py-36">
       <div class="max-w-7xl mx-auto px-6 px-8 w-5/12">
         <div
           class="bg-gray-600 text-white py-2 my-8 mr-4 shadow-xl w-full text-center font-bold"
@@ -39,9 +39,9 @@
                       <tr
                         v-for="data in datas"
                         :key="data.id"
-                        @click="select(data.id)"
-                        :class="{ 'bg-gray-300': selected[data.id] }"
-                        class="hover:bg-gray-300 cursor-pointer"
+                        @click="select(data)"
+                        :class="{ 'bg-yellow-400': data.selected }"
+                        class="cursor-pointer"
                       >
                         <td class="px-6 py-2 whitespace-nowrap">
                           <div class="text-sm font-medium text-gray-900">
@@ -111,9 +111,19 @@
             </div>
           </div>
         </div>
-        <div class="text-center m-6 py-8" :class="{'bg-red-600': resultColor[0], 'bg-blue-600': resultColor[1], 'bg-green-600': resultColor[2]}">
-          <div class="text-5xl font-bold text-white">
-            {{ result[state] }}
+        <div
+          class="text-center m-6 py-6 bg-white shadow-xl rounded-sm"
+          v-show="isData"
+        >
+          <div
+            class="text-4xl font-bold border-b-4 pb-2"
+            :class="{
+              'border-red-600': resultColor.teamAWin.isWin,
+              'border-blue-600': resultColor.teamBWin.isWin,
+              'border-green-600': resultColor.drow.isWin,
+            }"
+          >
+            {{ result }}
           </div>
         </div>
       </div>
@@ -134,7 +144,6 @@ import JetCheckbox from "@/Jetstream/Checkbox";
 export default {
   props: {
     datas: Object,
-    id: Number,
   },
 
   data() {
@@ -180,78 +189,71 @@ export default {
         { "border-color": "#ffa500" },
         { "border-color": "#fffacd" },
       ],
-      selected: [],
       teamA: [],
       teamB: [],
-      result: [
-          "Aチーム WIN !!",
-          "Bチーム WIN !!",
-          "引き分け",
-          "",
-      ],
-      state: 3,
-      resultColor: []
-
+      resultColor: {
+          teamAWin: {isWin : false, message: "Aチーム WIN !!"},
+          teamBWin: {isWin : false, message: "Bチーム WIN !!"},
+          drow: {isWin : false, message: "引き分け"},
+      },
     };
   },
 
   created() {
-    this.teamA.splice(0);
-    this.teamB.splice(0);
-    this.selected[this.datas.length] = true;
-    this.resultColor = this.resultColor.map((element) => element = false);
+    //selectedをreduceでdatasに入れる
+    if (this.datas.length > 0) {
+      this.teamA.splice(0);
+      this.teamB.splice(0);
+      this.datas.forEach(element => {
+          element.selected = false
+      });
 
-    this.teamA = this.teamA.concat(
-      this.datas[this.datas.length - 1].players[0],
-      this.datas[this.datas.length - 1].players[1],
-      this.datas[this.datas.length - 1].players[2],
-      this.datas[this.datas.length - 1].players[3],
-      this.datas[this.datas.length - 1].players[4],
-      this.datas[this.datas.length - 1].players[5]
-    );
+      const lastGame = this.datas[this.datas.length - 1];
 
-    this.teamB = this.teamB.concat(
-      this.datas[this.datas.length - 1].players[6],
-      this.datas[this.datas.length - 1].players[7],
-      this.datas[this.datas.length - 1].players[8],
-      this.datas[this.datas.length - 1].players[9],
-      this.datas[this.datas.length - 1].players[10],
-      this.datas[this.datas.length - 1].players[11]
-    );
+      lastGame.selected = true;
 
-    this.state = this.datas[this.datas.length - 1].result;
-    this.resultColor[this.state] = true;
+      this.teamA = lastGame.players.slice(0,6);
+      this.teamB = lastGame.players.slice(6,12);
+
+      this.selectColor(lastGame)
+    }
+  },
+
+  computed: {
+      result() {
+          return this.resultColor.teamAWin.isWin ? this.resultColor.teamAWin.message : this.resultColor.teamBWin.isWin ? this.resultColor.teamBWin.message : this.resultColor.drow.message
+      },
+      isData() {
+          return (this.datas.length > 0)
+      }
+
   },
 
   methods: {
-    select(id) {
+    select(data) {
       this.teamA.splice(0);
       this.teamB.splice(0);
-      this.resultColor = this.resultColor.map((element) => element = false);
+      this.datas.forEach((element) => (element.selected = false));
 
-      this.selected = this.selected.map((element) => false);
-      this.selected[id] = true;
+      data.selected = true;
 
-      this.teamA = this.teamA.concat(
-        this.datas[id - 1].players[0],
-        this.datas[id - 1].players[1],
-        this.datas[id - 1].players[2],
-        this.datas[id - 1].players[3],
-        this.datas[id - 1].players[4],
-        this.datas[id - 1].players[5]
-      );
+      this.teamA = data.players.slice(0,6);
+      this.teamB = data.players.slice(6,12);
 
-      this.teamB = this.teamB.concat(
-        this.datas[id - 1].players[6],
-        this.datas[id - 1].players[7],
-        this.datas[id - 1].players[8],
-        this.datas[id - 1].players[9],
-        this.datas[id - 1].players[10],
-        this.datas[id - 1].players[11]
-      );
-      this.state = this.datas[id-1].result;
-      this.resultColor[this.state] = true;
+      this.selectColor(data)
     },
+    selectColor(game) {
+        Object.keys(this.resultColor).forEach((key) => {
+            this.resultColor[key].isWin = false;
+        });
+        if(game.result == 0) {
+            this.resultColor.teamAWin.isWin = true;
+        } else if(game.result == 1) {
+            this.resultColor.teamBWin.isWin = true;
+        } else if(game.result == 2){
+            this.resultColor.drow.isWin = true;
+        }
+    }
   },
 
   components: {
