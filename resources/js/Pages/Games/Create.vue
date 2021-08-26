@@ -40,9 +40,6 @@
 
     <div class="py-36 flex flex-row">
       <div class="max-w-7xl mx-auto px-6 px-8 w-5/12">
-        <span class="text-red-500 text-sm font-bold"
-          >※{{ messages[state] }}</span
-        >
         <div class="flex justify-end">
           <jet-button
             @click.native="resetTeam"
@@ -52,7 +49,7 @@
           <jet-button
             @click.native="makeTeam"
             class="bg-green-600 text-base my-8 shadow-xl"
-            :disabled="disabled"
+            :disabled="disabled.makeTeam"
             >チーム作成</jet-button
           >
         </div>
@@ -147,7 +144,7 @@
           <jet-button
             @click.native="openModal"
             class="bg-yellow-400 text-center py-2 text-white text-base font-bold my-8 shadow-xl rounded-sm"
-            :disabled="state != 2"
+            :disabled="teamA.length !== 6 && teamB.length !== 6"
             >勝敗登録</jet-button
           >
         </div>
@@ -159,19 +156,30 @@
               >
                 Aチーム
               </div>
-              <div
-                v-for="playerA in teamA"
-                :key="playerA.index"
-                class="bg-white text-center py-3 text-base font-bold my-4 h-18 shadow-xl rounded-sm w-full"
+              <draggable
+                v-model="teamA"
+                item-key="id"
+                group="player"
+                tag="transition-group"
+                v-bind="dragOptions"
+                :component-data="{
+                  tag: 'ul',
+                  type: 'transition-group',
+                }"
               >
-                <div>{{ playerA.name }}</div>
-                <div
-                  class="px-2 inline-flex text-xs leading-5 font-semibold w-full h-8 grid place-items-center border-b-4"
-                  :style="bgColor[playerA.player_strength]"
-                >
-                  {{ skill_rate[playerA.player_strength] }}
-                </div>
-              </div>
+                <template #item="{ element }">
+                  <div class="bg-white text-center py-3 text-base font-bold my-4 h-18 shadow-xl rounded-sm w-full hover:bg-blue-100 cursor-pointer">
+                    <div>{{ element.name }}</div>
+                    <div
+                      class="px-2 inline-flex text-xs leading-5 font-semibold w-full h-8 grid place-items-center border-b-4"
+                      :style="bgColor[element.player_strength]"
+                    >
+                      {{ skill_rate[element.player_strength] }}
+                    </div>
+                  </div>
+                </template>
+                <template #header></template>
+              </draggable>
             </div>
           </div>
           <div class="w-1/2">
@@ -181,19 +189,30 @@
               >
                 Bチーム
               </div>
-              <div
-                v-for="playerB in teamB"
-                :key="playerB.index"
-                class="bg-white text-center py-3 text-base font-bold my-4 h-18 shadow-xl rounded-sm w-full"
+              <draggable
+                v-model="teamB"
+                item-key="name"
+                group="player"
+                tag="transition-group"
+                v-bind="dragOptions"
+                :component-data="{
+                  tag: 'ul',
+                  type: 'transition-group',
+                }"
               >
-                <div>{{ playerB.name }}</div>
-                <div
-                  class="px-2 inline-flex text-xs leading-5 font-semibold w-full h-8 grid place-items-center border-b-4"
-                  :style="bgColor[playerB.player_strength]"
-                >
-                  {{ skill_rate[playerB.player_strength] }}
-                </div>
-              </div>
+                <template #item="{ element }">
+                  <div class="bg-white text-center py-3 text-base font-bold my-4 h-18 shadow-xl rounded-sm w-full hover:bg-blue-100 cursor-pointer">
+                    <div>{{ element.name }}</div>
+                    <div
+                      class="px-2 inline-flex text-xs leading-5 font-semibold w-full h-8 grid place-items-center border-b-4"
+                      :style="bgColor[element.player_strength]"
+                    >
+                      {{ skill_rate[element.player_strength] }}
+                    </div>
+                  </div>
+                </template>
+                <template #header></template>
+              </draggable>
             </div>
           </div>
         </div>
@@ -231,6 +250,7 @@ import JetInput from "@/Jetstream/Input";
 import JetLabel from "@/Jetstream/Label";
 import JetInputError from "@/Jetstream/InputError";
 import JetCheckbox from "@/Jetstream/Checkbox";
+import draggable from "vuedraggable";
 
 export default {
   props: {
@@ -248,21 +268,18 @@ export default {
         "MASTER",
         "GRAND MASTER",
       ],
-      show: true,
       messages: [
         "観戦者をクリックして登録",
         "チーム作成をクリックしてチーム分け",
         "勝敗登録で試合結果を登録",
       ],
       show: false,
-      state: 0,
-      editId: null,
       selected: [],
       spectatePlayers: [],
       teamA: [],
       teamB: [],
       participatePlayers: Object.assign([], this.players),
-      disabled: true,
+      disabled: {makeTeam: true, createGame: true},
       form: this.$inertia.form({
         map: 0,
         aPlayers: [],
@@ -308,6 +325,12 @@ export default {
     total() {
       return this.players.filter((element) => element.attendance == 1).length;
     },
+    dragOptions() {
+      return {
+        animation: 200,
+        disabled: false,
+      };
+    },
   },
 
   methods: {
@@ -322,7 +345,7 @@ export default {
           1
         );
       } else {
-        if (this.state == 0) {
+        if (this.participatePlayers.length !== 12) {
           this.selected[id] = true;
           this.spectatePlayers = this.spectatePlayers.concat(
             this.participatePlayers.filter((element) => element.id == id)
@@ -335,15 +358,12 @@ export default {
       }
 
       if (this.participatePlayers.length == 12) {
-        this.disabled = false;
-        this.state = 1;
+        this.disabled.makeTeam = false;
       } else {
-        this.disabled = true;
-        this.state = 0;
+        this.disabled.makeTeam = true;
       }
     },
     makeTeam() {
-      this.state = 2;
       this.teamA.splice(0);
       this.teamB.splice(0);
       this.participatePlayers.sort(function (a, b) {
@@ -374,7 +394,6 @@ export default {
       );
     },
     resetTeam() {
-      this.state = 0;
       this.spectatePlayers.splice(0);
       this.participatePlayers.splice(0);
       this.participatePlayers = Object.assign([], this.players);
@@ -393,9 +412,9 @@ export default {
       this.teamB.forEach((element) => {
         this.form.bPlayers = this.form.bPlayers.concat(element.id);
       });
-        this.spectatePlayers.forEach((element) => {
-          this.form.sPlayers = this.form.sPlayers.concat(element.id);
-        });
+      this.spectatePlayers.forEach((element) => {
+        this.form.sPlayers = this.form.sPlayers.concat(element.id);
+      });
     },
 
     createGame(id) {
@@ -415,6 +434,7 @@ export default {
     JetInputError,
     JetLabel,
     JetCheckbox,
+    draggable,
   },
 };
 </script>

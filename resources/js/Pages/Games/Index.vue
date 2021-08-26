@@ -200,6 +200,7 @@ export default {
   },
 
   created() {
+      console.log(this.datas)
     //selectedをreduceでdatasに入れる
     if (this.datas.length > 0) {
       this.teamA.splice(0);

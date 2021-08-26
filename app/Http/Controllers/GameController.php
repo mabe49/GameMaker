@@ -26,6 +26,7 @@ class GameController extends Controller
         // }
 
         $datas = Game::with('players')->get();
+        // dd($datas);
 
         return Inertia::render('Games/Index', ['datas' => $datas]);
     }
