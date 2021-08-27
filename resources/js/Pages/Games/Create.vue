@@ -327,7 +327,7 @@ export default {
     },
     dragOptions() {
       return {
-        animation: 200,
+        animation: 300,
         disabled: false,
       };
     },
